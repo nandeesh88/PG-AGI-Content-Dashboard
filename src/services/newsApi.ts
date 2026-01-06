@@ -76,7 +76,7 @@ export const fetchNews = async (
       author: article.author || undefined,
       publishedAt: article.publishedAt,
       createdAt: new Date().toISOString(),
-      content: article.content,
+      content: article.content || undefined,
     }));
   } catch (error) {
     console.error('Error fetching news:', error);
@@ -125,7 +125,7 @@ export const searchNews = async (
       author: article.author || undefined,
       publishedAt: article.publishedAt,
       createdAt: new Date().toISOString(),
-      content: article.content,
+      content: article.content || undefined,
     }));
   } catch (error) {
     console.error('Error searching news:', error);

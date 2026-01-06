@@ -8,6 +8,7 @@ export interface BaseContent {
   type: ContentType;
   title: string;
   description?: string;
+  content?: string;
   image?: string;
   url?: string;
   createdAt: string;
@@ -20,7 +21,6 @@ export interface NewsArticle extends BaseContent {
   source: string;
   author?: string;
   publishedAt: string;
-  content?: string;
 }
 
 // Recommendation
@@ -52,10 +52,41 @@ export interface Post extends BaseContent {
 // Union type for all content items
 export type ContentItem = NewsArticle | Recommendation | SocialPost | Post;
 
+// News API Response
+export interface NewsAPIArticle {
+  source: {
+    id: string | null;
+    name: string;
+  };
+  author: string | null;
+  title: string;
+  description: string | null;
+  url: string;
+  urlToImage: string | null;
+  publishedAt: string;
+  content: string | null;
+}
+
+export interface NewsAPIResponse {
+  status: string;
+  totalResults: number;
+  articles: NewsAPIArticle[];
+}
+
 // UI Component Props
 export interface ContentCardProps {
   item: ContentItem;
   onFavorite: (item: ContentItem) => void;
   isFavorite: boolean;
   isDraggable?: boolean;
+}
+
+// Preferences State
+export interface PreferencesState {
+  categories: string[];
+  contentTypes: ContentType[];
+  language: string;
+  theme: 'light' | 'dark';
+  notificationsEnabled: boolean;
+  isLoading: boolean;
 }
