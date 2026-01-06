@@ -1,12 +1,49 @@
-// src/types/index.ts (unchanged)
-// Make sure this file has your ContentItem union type as before:
-// ContentItem = NewsArticle | Recommendation | SocialPost
+// src/types/index.ts
 
-// Example data mapping in index.ts or your main dashboard file:
+// Content Types
+export type ContentType = 'news' | 'recommendation' | 'social';
 
-import { ContentItem, ContentType, NewsArticle, Recommendation, SocialPost } from '@/types';
+export interface BaseContent {
+  id: string;
+  type: ContentType;
+  title: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  createdAt: string;
+}
 
-// Sample data (replace with your API fetch logic)
+export interface NewsArticle extends BaseContent {
+  type: 'news';
+  category: string;
+  source: string;
+  author?: string;
+  publishedAt: string;
+  content?: string;
+}
+
+export interface Recommendation extends BaseContent {
+  type: 'recommendation';
+  rating: number;
+  genre: string;
+  releaseDate?: string;
+  popularity?: number;
+}
+
+export interface SocialPost extends BaseContent {
+  type: 'social';
+  username: string;
+  content: string;
+  likes: number;
+  comments?: number;
+  timestamp: string;
+  hashtags?: string[];
+}
+
+// ✅ Explicitly export ContentItem type
+export type ContentItem = NewsArticle | Recommendation | SocialPost;
+
+// Example data
 const news: NewsArticle[] = [
   {
     id: '1',
@@ -45,10 +82,10 @@ const socialPosts: SocialPost[] = [
   },
 ];
 
-// Combine all content types into unified array
+// ✅ Export the array for your components
 export const contentItems: ContentItem[] = [...news, ...recommendations, ...socialPosts];
 
-// Optional: helper to filter by type
+// Optional: helper
 export const getContentByType = (type?: ContentType): ContentItem[] => {
   if (!type) return contentItems;
   return contentItems.filter((item) => item.type === type);

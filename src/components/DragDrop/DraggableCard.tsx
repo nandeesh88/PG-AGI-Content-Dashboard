@@ -2,7 +2,7 @@
 import React from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import ContentCard from '../Dashboard/ContentCard';
-import { ContentItem } from '@/types';
+import { ContentItem } from '@/types'; // or relative path
 
 interface DraggableCardProps {
   item: ContentItem;
