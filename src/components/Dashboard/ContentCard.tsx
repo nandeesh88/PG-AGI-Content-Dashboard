@@ -8,11 +8,11 @@ export interface ContentItem {
   description?: string;
   content?: string;
   image?: string;
-  url?: string; // now it can be undefined
-  category: string;
-  source: string;
-  publishedAt: string;
-  createdAt: string;
+  url?: string; // optional
+  category?: string; // now optional
+  source?: string;   // now optional
+  publishedAt?: string; // now optional
+  createdAt?: string;   // now optional
 }
 
 interface ContentCardProps {
@@ -105,9 +105,9 @@ const ContentCard: React.FC<ContentCardProps> = ({
         </p>
 
         <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-          <span data-testid="content-source">{item.source}</span>
+          <span data-testid="content-source">{item.source || 'Unknown'}</span>
           <span className="mx-2">•</span>
-          <span data-testid="content-category">{item.category}</span>
+          <span data-testid="content-category">{item.category || 'General'}</span>
         </div>
 
         <button
