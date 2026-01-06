@@ -1,7 +1,7 @@
 // src/types/index.ts
 
 // Content Types
-export type ContentType = 'news' | 'recommendation' | 'social';
+export type ContentType = 'news' | 'recommendation' | 'social' | 'post'; // ✅ Added 'post'
 
 export interface BaseContent {
   id: string;
@@ -13,6 +13,7 @@ export interface BaseContent {
   createdAt: string;
 }
 
+// News Article
 export interface NewsArticle extends BaseContent {
   type: 'news';
   category: string;
@@ -22,6 +23,7 @@ export interface NewsArticle extends BaseContent {
   content?: string;
 }
 
+// Recommendation
 export interface Recommendation extends BaseContent {
   type: 'recommendation';
   rating: number;
@@ -30,6 +32,7 @@ export interface Recommendation extends BaseContent {
   popularity?: number;
 }
 
+// Social Post
 export interface SocialPost extends BaseContent {
   type: 'social';
   username: string;
@@ -40,53 +43,19 @@ export interface SocialPost extends BaseContent {
   hashtags?: string[];
 }
 
-// ✅ Explicitly export ContentItem type
-export type ContentItem = NewsArticle | Recommendation | SocialPost;
+// Post (new type for "post")
+export interface Post extends BaseContent {
+  type: 'post';
+  content: string;
+}
 
-// Example data
-const news: NewsArticle[] = [
-  {
-    id: '1',
-    type: 'news',
-    title: 'Breaking News!',
-    category: 'World',
-    source: 'BBC',
-    publishedAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-    description: 'This is the description of the news article.',
-    url: 'https://www.bbc.com/news',
-  },
-];
+// Union type for all content items
+export type ContentItem = NewsArticle | Recommendation | SocialPost | Post;
 
-const recommendations: Recommendation[] = [
-  {
-    id: '2',
-    type: 'recommendation',
-    title: 'Watch This Movie',
-    rating: 4.5,
-    genre: 'Action',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-const socialPosts: SocialPost[] = [
-  {
-    id: '3',
-    type: 'social',
-    title: 'Check this out!',
-    username: 'johndoe',
-    content: 'This is a social post content.',
-    likes: 120,
-    timestamp: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-  },
-];
-
-// ✅ Export the array for your components
-export const contentItems: ContentItem[] = [...news, ...recommendations, ...socialPosts];
-
-// Optional: helper
-export const getContentByType = (type?: ContentType): ContentItem[] => {
-  if (!type) return contentItems;
-  return contentItems.filter((item) => item.type === type);
-};
+// UI Component Props
+export interface ContentCardProps {
+  item: ContentItem;
+  onFavorite: (item: ContentItem) => void;
+  isFavorite: boolean;
+  isDraggable?: boolean;
+}
