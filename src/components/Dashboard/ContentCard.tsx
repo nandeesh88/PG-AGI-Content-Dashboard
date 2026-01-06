@@ -1,19 +1,7 @@
+// src/components/Dashboard/ContentCard.tsx
 import React from 'react';
 import { Heart } from 'lucide-react';
-
-export interface ContentItem {
-  id: string;
-  type: 'news' | 'recommendation' | 'post' | 'social'; // added 'social'
-  title: string;
-  description?: string;
-  content?: string;
-  image?: string;
-  url?: string; // can be undefined
-  category?: string;
-  source?: string;
-  publishedAt?: string;
-  createdAt?: string;
-}
+import { ContentItem } from '@/types'; // ✅ Use the shared type
 
 interface ContentCardProps {
   item: ContentItem;
@@ -34,7 +22,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   };
 
   const handleMainButtonClick = () => {
-    if (item.url) {
+    if ('url' in item && item.url) {
       window.open(item.url, '_blank');
     }
   };
@@ -45,7 +33,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
         return 'Read Article';
       case 'recommendation':
         return 'Watch Now';
-      case 'post':
       case 'social':
         return 'View Post';
       default:
@@ -54,68 +41,89 @@ const ContentCard: React.FC<ContentCardProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all"
       data-testid="content-card"
     >
       {item.image && (
-        <img 
-          src={item.image} 
-          alt={item.title} 
+        <img
+          src={item.image}
+          alt={item.title}
           className="w-full h-48 object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
+          onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
         />
       )}
-      
+
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
-          <span 
-            className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-            data-testid="content-type-badge"
-          >
+          <span className="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {item.type}
           </span>
           <button
             onClick={handleFavoriteClick}
             className="transition-colors hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-300"
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            data-testid="favorite-button"
           >
             <Heart
               size={20}
               className={isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'}
-              data-testid="heart-icon"
             />
           </button>
         </div>
 
-        <h3 
-          className="font-bold text-lg mb-2 text-gray-900 dark:text-white line-clamp-2"
-          data-testid="content-title"
-        >
+        <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white line-clamp-2">
           {item.title}
         </h3>
 
-        <p 
-          className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3"
-          data-testid="content-description"
-        >
-          {item.description || item.content || ''}
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+          {'content' in item ? item.content || item.description || '' : item.description || ''}
         </p>
 
-        <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-          <span data-testid="content-source">{item.source || 'Unknown'}</span>
-          <span className="mx-2">•</span>
-          <span data-testid="content-category">{item.category || 'General'}</span>
-        </div>
+        {/* News-specific info */}
+        {item.type === 'news' && (
+          <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+            <span>{item.source}</span>
+            <span className="mx-2">•</span>
+            <span>{item.category}</span>
+            <span className="mx-2">•</span>
+            <span>{item.publishedAt}</span>
+          </div>
+        )}
+
+        {/* Recommendation-specific info */}
+        {item.type === 'recommendation' && (
+          <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+            <span>Genre: {item.genre}</span>
+            <span className="mx-2">•</span>
+            <span>Rating: {item.rating}</span>
+            {item.releaseDate && (
+              <>
+                <span className="mx-2">•</span>
+                <span>Release: {item.releaseDate}</span>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* SocialPost-specific info */}
+        {item.type === 'social' && (
+          <div className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+            <span>@{item.username}</span>
+            <span className="mx-2">•</span>
+            <span>Likes: {item.likes}</span>
+            {item.comments && (
+              <>
+                <span className="mx-2">•</span>
+                <span>Comments: {item.comments}</span>
+              </>
+            )}
+          </div>
+        )}
 
         <button
           onClick={handleMainButtonClick}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!item.url}
-          data-testid="main-action-button"
+          disabled={!('url' in item && item.url)}
         >
           {getButtonText()}
         </button>

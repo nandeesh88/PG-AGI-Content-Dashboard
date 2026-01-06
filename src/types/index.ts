@@ -1,162 +1,55 @@
-// Content Types
-export type ContentType = 'news' | 'recommendation' | 'social';
+// src/types/index.ts (unchanged)
+// Make sure this file has your ContentItem union type as before:
+// ContentItem = NewsArticle | Recommendation | SocialPost
 
-export interface BaseContent {
-  id: string;
-  type: ContentType;
-  title: string;
-  description?: string;
-  image?: string;
-  url?: string;
-  createdAt: string;
-}
+// Example data mapping in index.ts or your main dashboard file:
 
-export interface NewsArticle extends BaseContent {
-  type: 'news';
-  category: string;
-  source: string;
-  author?: string;
-  publishedAt: string;
-  content?: string;
-}
+import { ContentItem, ContentType, NewsArticle, Recommendation, SocialPost } from '@/types';
 
-export interface Recommendation extends BaseContent {
-  type: 'recommendation';
-  rating: number;
-  genre: string;
-  releaseDate?: string;
-  popularity?: number;
-}
+// Sample data (replace with your API fetch logic)
+const news: NewsArticle[] = [
+  {
+    id: '1',
+    type: 'news',
+    title: 'Breaking News!',
+    category: 'World',
+    source: 'BBC',
+    publishedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    description: 'This is the description of the news article.',
+    url: 'https://www.bbc.com/news',
+  },
+];
 
-export interface SocialPost extends BaseContent {
-  type: 'social';
-  username: string;
-  content: string;
-  likes: number;
-  comments?: number;
-  timestamp: string;
-  hashtags?: string[];
-}
+const recommendations: Recommendation[] = [
+  {
+    id: '2',
+    type: 'recommendation',
+    title: 'Watch This Movie',
+    rating: 4.5,
+    genre: 'Action',
+    createdAt: new Date().toISOString(),
+  },
+];
 
-export type ContentItem = NewsArticle | Recommendation | SocialPost;
+const socialPosts: SocialPost[] = [
+  {
+    id: '3',
+    type: 'social',
+    title: 'Check this out!',
+    username: 'johndoe',
+    content: 'This is a social post content.',
+    likes: 120,
+    timestamp: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  },
+];
 
-// User Preferences
-export interface UserPreferences {
-  categories: string[];
-  contentTypes: ContentType[];
-  language: string;
-  theme: 'light' | 'dark';
-  notificationsEnabled: boolean;
-}
+// Combine all content types into unified array
+export const contentItems: ContentItem[] = [...news, ...recommendations, ...socialPosts];
 
-// State Types
-export interface ContentState {
-  items: ContentItem[];
-  loading: boolean;
-  error: string | null;
-  page: number;
-  hasMore: boolean;
-  filters: {
-    searchQuery: string;
-    category?: string;
-    type?: ContentType;
-  };
-}
-
-export interface FavoritesState {
-  items: ContentItem[];
-}
-
-export interface PreferencesState extends UserPreferences {
-  isLoading: boolean;
-}
-
-// API Response Types
-export interface NewsAPIResponse {
-  status: string;
-  totalResults: number;
-  articles: Array<{
-    source: { id: string | null; name: string };
-    author: string | null;
-    title: string;
-    description: string;
-    url: string;
-    urlToImage: string | null;
-    publishedAt: string;
-    content: string;
-  }>;
-}
-
-export interface TMDBResponse {
-  page: number;
-  results: Array<{
-    id: number;
-    title?: string;
-    name?: string;
-    overview: string;
-    poster_path: string | null;
-    backdrop_path: string | null;
-    vote_average: number;
-    release_date?: string;
-    first_air_date?: string;
-    genre_ids: number[];
-  }>;
-  total_pages: number;
-  total_results: number;
-}
-
-// UI Component Props
-export interface ContentCardProps {
-  item: ContentItem;
-  onFavorite: (item: ContentItem) => void;
-  isFavorite: boolean;
-  isDraggable?: boolean;
-}
-
-export interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-}
-
-export interface SidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-  favoriteCount: number;
-}
-
-// Drag and Drop
-export interface DragItem {
-  id: string;
-  index: number;
-  content: ContentItem;
-}
-
-// Authentication
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-  image?: string;
-}
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-
-// Utility Types
-export type AsyncThunkConfig = {
-  state: RootState;
-  dispatch: AppDispatch;
-  rejectValue: string;
+// Optional: helper to filter by type
+export const getContentByType = (type?: ContentType): ContentItem[] => {
+  if (!type) return contentItems;
+  return contentItems.filter((item) => item.type === type);
 };
-
-export type RootState = {
-  content: ContentState;
-  favorites: FavoritesState;
-  preferences: PreferencesState;
-};
-
-export type AppDispatch = any; // Will be typed properly in store setup
