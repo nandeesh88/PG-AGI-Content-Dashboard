@@ -8,7 +8,7 @@ export interface ContentItem {
   description?: string;
   content?: string;
   image?: string;
-  url: string;
+  url?: string; // now it can be undefined
   category: string;
   source: string;
   publishedAt: string;
