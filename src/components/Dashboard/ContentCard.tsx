@@ -3,16 +3,16 @@ import { Heart } from 'lucide-react';
 
 export interface ContentItem {
   id: string;
-  type: 'news' | 'recommendation' | 'post';
+  type: 'news' | 'recommendation' | 'post' | 'social'; // added 'social'
   title: string;
   description?: string;
   content?: string;
   image?: string;
-  url?: string; // optional
-  category?: string; // now optional
-  source?: string;   // now optional
-  publishedAt?: string; // now optional
-  createdAt?: string;   // now optional
+  url?: string; // can be undefined
+  category?: string;
+  source?: string;
+  publishedAt?: string;
+  createdAt?: string;
 }
 
 interface ContentCardProps {
@@ -46,6 +46,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
       case 'recommendation':
         return 'Watch Now';
       case 'post':
+      case 'social':
         return 'View Post';
       default:
         return 'View';
